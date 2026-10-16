@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="indexStyle.css">
+</head>
+<body>
+    <div class="container">
+
+        <!-- header section -->
+        <header>
+            <h1>🌸 日本語語彙抽出 & 単語帳 🌸 </h1>
+            <div class="header-actions">
+                <span id="status-badge" class="badge loading">辞書読み込み中...</span>
+                <button id="config-btn" class="btn-small">⚙ GitHub設定</button>
+            </div>
+        </header>
+
+        <!-- text area for input -->
+         <section class="card">
+            <h2>日本語テキストを入力</h2>
+             <textarea id="input-text" rows="4" placeholder="解析したい日本語の文書を入力してください..."></textarea>
+             <button id="analyze-btn" class="btn-primary" disabled>🔍 形態素解析して名詞を抽出</button>
+         </section>
+
+        <!-- English meaningの編集 -->
+        <section class="card" id ="extraction-section" style="display: none;">
+            <h2>単語の選択と英語意味の確認・編集</h2>
+            <div class="controls">
+                <button id="select-all-btn" class="btn-small">☑ 全選択</button>
+                <button id="deselect-all-btn" class="btn-small">☐ 全解除</button>
+                <span id="count-info">抽出数: 0語</span>
+            </div>
+
+            <!-- Extracted words will be displayed here -->
+            <div id="word-editor-list" class="editor-container"></div>
+            <button id="save-btn" class="btn-success">選択した単語を単語帳に追加</button>
+        </section>
+
+        <!-- my vocabulary list and -->
+        <section class="card">
+            <h2>私の単語帳</h2>
+            <div id="wordbook-table-container">
+                <table class="word-table">
+                    <thead>
+                        <tr>
+                            <th>単語</th>
+                            <th>品詞</th>
+                            <th>意味</th>
+                            <th>登録日</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saved-word-tbody">
+                        <!-- Words will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-group">
+                <button id="github-sync-btn" class="btn-github">GitHubへ保存</button>
+                <button id="export-html-btn" class="btn-secondary">📤 単語帳</button>
+                <button id="clear-all-btn" class="btn-danger">🗑 全削除</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- GitHub settings model  -->
+    <div id="config-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>⚙ GitHub REST API 設定</h3>
+            <p class="modal-desc">GitHubへの自動連携に使用するPersonal Access Tokenを設定します。</p>
+
+            <label for="github-token">Personal Access Token(PAT):</label>
+            <input type="password" id="github-token" placeholder="Enter your GitHub PAT">
+
+            <label for="github-repo">GitHub Repository:</label>
+            <input type="text" id="github-repo" value="scot-inf/N252313_Thazin_til">
+
+            <label for="github-path">Target File Path:</label>
+            <input type="text" id="github-path" value="wordbook.md">
+
+            <div class="modal-actions">
+                <button id="github-save-btn" class="btn-primary">GitHubへ保存</button>
+                <button id="close-btn" class="btn-secondary">キャンセル</button>
+            </div>
+         </div>
+
+    </div>
+
+    <!-- kuromoji.js -->
+    <script src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.min.js"></script>
+    <script src="main.js"></script>
+
+</body>
+</html>
