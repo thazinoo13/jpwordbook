@@ -5,4 +5,12 @@
 
 | 単語  | 品詞  | 意味  | 登録日  |
 | :--- | :--- | :--- | :--- |
-| 家 | 名詞 | house, residence, dwelling, home | 2026-11-02 |
+| 昔 | 名詞 | the old days, the past, former times, a long time ago | 2026-11-02 |
+| ところ | 名詞 | place, spot, scene, site | 2026-11-02 |
+| 元気 | 名詞 | lively, full of spirit, energetic, vigorous, vital, spirited | 2026-11-02 |
+| 女の子 | 名詞 | girl, daughter, baby girl | 2026-11-02 |
+| 名前 | 名詞 | name | 2026-11-02 |
+| さき | 名詞 | point, tip, end, nozzle | 2026-11-02 |
+| 毎朝 | 名詞 | every morning | 2026-11-02 |
+| 村 | 名詞 | village | 2026-11-02 |
+| まわり | 名詞 | circumference, girth | 2026-11-02 |
