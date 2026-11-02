@@ -1,6 +1,6 @@
 # 日本語単語帳 (Japanese Wordbook)
 
-* Last Updated: 2026-10-30
+* Last Updated: 2026-11-02
 
 | 単語  | 品詞  | 意味  | 登録日  |
 | :--- | :--- | :--- | :--- |
@@ -14,3 +14,21 @@
 | 行 | 名詞 | line (of text), row, verse | 2026-10-30 |
 | 木 | 名詞 | tree, shrub, bush | 2026-10-30 |
 | 暮 | 名詞 | sunset, sundown, nightfall, dusk | 2026-10-30 |
+| 村 | 名詞 | village | 2026-11-02 |
+| 元気 | 名詞 | lively, full of spirit, energetic, vigorous, vital, spirited | 2026-11-02 |
+| 女の子 | 名詞 | girl, daughter, baby girl | 2026-11-02 |
+| 毎朝 | 名詞 | every morning | 2026-11-02 |
+| 山 | 名詞 | mountain, hill | 2026-11-02 |
+| 川 | 名詞 | river, stream | 2026-11-02 |
+| まわり | 名詞 | circumference, girth | 2026-11-02 |
+| 春 | 名詞 | spring, springtime | 2026-11-02 |
+| 桜 | 名詞 | cherry tree, cherry blossom, sakura | 2026-11-02 |
+| 村人 | 名詞 | 意味を検索中... | 2026-11-02 |
+| たち | 名詞 | 意味を検索中... | 2026-11-02 |
+| みんな | 名詞 | 意味を検索中... | 2026-11-02 |
+| 花見 | 名詞 | 意味を検索中... | 2026-11-02 |
+| 日 | 名詞 | 意味を検索中... | 2026-11-02 |
+| 中 | 名詞 | 意味を検索中... | 2026-11-02 |
+| 不思議 | 名詞 | 意味を検索中... | 2026-11-02 |
+| 石 | 名詞 | 意味を検索中... | 2026-11-02 |
+| 家 | 名詞 | 意味を検索中... | 2026-11-02 |
