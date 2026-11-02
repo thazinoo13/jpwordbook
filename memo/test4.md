@@ -12,3 +12,13 @@
 | 石 | 名詞 | stone, rock, pebble | 2026-11-02 |
 | 願い | 名詞 | desire, wish, hope | 2026-11-02 |
 | の | 名詞 | indicates possessive | 2026-11-02 |
+| 次 | 名詞 | next, following, subsequent | 2026-11-02 |
+| 日 | 名詞 | Sunday | 2026-11-02 |
+| 村 | 名詞 | village | 2026-11-02 |
+| 畑 | 名詞 | field (for growing wheat, fruit, vegetables, etc.), cultivated land, vegetable plot, kitchen garden, plantation | 2026-11-02 |
+| 野菜 | 名詞 | vegetable | 2026-11-02 |
+| 作物 | 名詞 | crop, crops, (agricultural) produce, farm products | 2026-11-02 |
+| たくさん | 名詞 | a lot, lots, plenty, many, a large number, much, a great deal, a good deal | 2026-11-02 |
+| 川 | 名詞 | river, stream | 2026-11-02 |
+| 水 | 名詞 | water (esp. cool or cold) | 2026-11-02 |
+| きれい | 名詞 | pretty, lovely, beautiful, fair | 2026-11-02 |
