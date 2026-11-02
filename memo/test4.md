@@ -20,5 +20,3 @@
 | 作物 | 名詞 | crop, crops, (agricultural) produce, farm products | 2026-11-02 |
 | たくさん | 名詞 | a lot, lots, plenty, many, a large number, much, a great deal, a good deal | 2026-11-02 |
 | 川 | 名詞 | river, stream | 2026-11-02 |
-| 水 | 名詞 | water (esp. cool or cold) | 2026-11-02 |
-| きれい | 名詞 | pretty, lovely, beautiful, fair | 2026-11-02 |
