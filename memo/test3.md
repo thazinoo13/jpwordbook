@@ -23,3 +23,4 @@
 | 日 | 名詞 | Sunday | 2026-11-02 |
 | ふしぎ | 名詞 | wonderful, marvelous, strange, incredible, amazing, curious, miraculous, mysterious | 2026-11-02 |
 | 石 | 名詞 | stone, rock, pebble | 2026-11-02 |
+| 家 | 名詞 | - | 2026-11-02 |
