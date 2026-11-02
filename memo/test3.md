@@ -14,12 +14,12 @@
 | 毎朝 | 名詞 | every morning | 2026-11-02 |
 | 村 | 名詞 | village | 2026-11-02 |
 | まわり | 名詞 | circumference, girth | 2026-11-02 |
-| きれい | 名詞 | - | 2026-11-02 |
-| 山 | 名詞 | - | 2026-11-02 |
-| 川 | 名詞 | - | 2026-11-02 |
-| 春 | 名詞 | - | 2026-11-02 |
-| 桜 | 名詞 | - | 2026-11-02 |
-| ていねい | 名詞 | - | 2026-11-02 |
-| 日 | 名詞 | - | 2026-11-02 |
-| ふしぎ | 名詞 | - | 2026-11-02 |
-| 石 | 名詞 | - | 2026-11-02 |
+| きれい | 名詞 | pretty, lovely, beautiful, fair | 2026-11-02 |
+| 山 | 名詞 | mountain, hill | 2026-11-02 |
+| 川 | 名詞 | river, stream | 2026-11-02 |
+| 春 | 名詞 | spring, springtime | 2026-11-02 |
+| 桜 | 名詞 | cherry tree, cherry blossom, sakura | 2026-11-02 |
+| ていねい | 名詞 | polite, courteous, civil | 2026-11-02 |
+| 日 | 名詞 | Sunday | 2026-11-02 |
+| ふしぎ | 名詞 | wonderful, marvelous, strange, incredible, amazing, curious, miraculous, mysterious | 2026-11-02 |
+| 石 | 名詞 | stone, rock, pebble | 2026-11-02 |
