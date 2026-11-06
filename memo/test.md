@@ -8,3 +8,4 @@
 | 前 | 名詞 | last (i.e. immediately preceding), previous, ex-, former | 2026-11-06 |
 | 視点 | 名詞 | point of view, viewpoint, angle, perspective | 2026-11-06 |
 | メディア | 名詞 | media | 2026-11-06 |
+| 人 | 名詞 | human | 2026-11-06 |
