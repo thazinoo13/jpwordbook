@@ -7,3 +7,4 @@
 | :--- | :--- | :--- | :--- |
 | ホームページ | 名詞 | home page (of a website or browser), homepage | 2026-11-06 |
 | 動画 | 名詞 | video (esp. digital), video clip, clip | 2026-11-06 |
+| 閲覧 | 名詞 | inspection, reading, perusal | 2026-11-06 |
