@@ -1,0 +1,16 @@
+# 日本語単語帳 
+
+* Target Path: memo/test9.md
+* Last Updated: 2026-11-16
+
+| 単語  | 読み方  | 意味  | 登録日  |
+| :--- | :--- | :--- | :--- |
+| ニュース | にゅーす | news | 2026-11-16 |
+| サイト | さいと | site | 2026-11-16 |
+| 国内外 | こくないがい | inside and outside the country, domestic and foreign | 2026-11-16 |
+| 取材 | しゅざい | gathering material (for an article, novel, etc.), collecting information, covering (an event, incident, etc.), reporting, interview (for a news story) | 2026-11-16 |
+| 網 | もう | net, netting | 2026-11-16 |
+| さまざま | さまざま | various, varied, diverse, all sorts of | 2026-11-16 |
+| 分野 | ぶんや | field, sphere, realm, division, branch | 2026-11-16 |
+| 正確 | せいかく | accurate, correct, precise, exact | 2026-11-16 |
+| お伝え | おつたえ | 連絡 | 2026-11-16 |
