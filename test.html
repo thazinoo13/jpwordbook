@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日本語語彙抽出 & 単語帳</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+
+    <!-- Modal Dialog (Replaces native alert/confirm) -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+            <h3 id="modal-title" class="text-base font-bold text-slate-900 mb-2">お知らせ</h3>
+            <p id="modal-message" class="text-slate-600 text-sm mb-6">メッセージ...</p>
+            <div id="modal-actions" class="flex justify-end gap-2">
+                <button id="modal-cancel" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">キャンセル</button>
+                <button id="modal-confirm" class="px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl">確認</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT -->
+    <div class="app-layout">
+
+        <!-- SIDEBAR NAVIGATION MENU (LEFT) -->
+        <aside class="sidebar select-none">
+            <div class="brand">
+                <div class="brand-logo-badge">🌸</div>
+                <span class="brand-title">語彙抽出 & 単語帳</span>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" onclick="switchTab('extractor', this)">
+                    <span class="nav-icon">✏️</span> 語彙抽出・編集
+                </button>
+                <button class="nav-btn" onclick="switchTab('wordbook', this)">
+                    <span class="nav-icon">🕮</span> 私の単語帳
+                </button>
+                <button class="nav-btn" onclick="switchTab('quiz', this)">
+                    <span class="nav-icon">☑</span> クイズ学習 (Quiz)
+                </button>
+                <button class="nav-btn" onclick="switchTab('settings', this)">
+                    <span class="nav-icon">⚙</span> 設定・連携 (Settings)
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">U</div>
+                    <div class="user-info truncate">
+                        <span class="user-name block truncate">Local User</span>
+                        <span class="user-status block text-[11px] text-slate-400 truncate" id="sidebar-path-label">wordbook.md</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN VIEW AREA -->
+        <main class="main-content">
+            
+            <!-- TOPBAR HEADER -->
+            <header class="topbar">
+                <h1 id="view-title"> 日本語テキスト抽出</h1>
+                <div class="header-actions">
+                    <span id="status-badge" class="badge loading">辞書読み込み中...</span>
+                </div>
+            </header>
+
+            <!-- SCROLLABLE BODY CONTENT AREA -->
+            <div class="content-body">
+
+                <!-- TAB 1: EXTRACTOR & EDITOR -->
+                <div id="tab-extractor" class="tab-panel active">
+                    
+                    <!-- Left Section: Text Input Card -->
+                    <section class="card gap-4">
+                        <h2>日本語テキストを入力</h2>
+                        <textarea id="input-text" rows="7" placeholder="解析したい日本語の文書を入力してください..."></textarea>
+                        <small id="errorMsg" class="error-text" style="display: none;">⚠️ エラー: 有効な日本語（漢字・ひらがな・カタカナ）を入力してください。</small>
+
+                        
+                        <div class="dropdown-group">
+                            <label for="languageInput">翻訳先の言語を選択:</label>
+                            <input type="text" id="languageInput" list="languageList" placeholder="言語を検索または選択...">
+
+                            <datalist id="languageList">
+                                <option value="英語 (English)" data-code="en">
+                                <option value="ミャンマー語 (Myanmar)" data-code="my">
+                                <option value="中国語 (Chinese)" data-code="zh">
+                                <option value="韓国語 (Korean)" data-code="ko">
+                            </datalist>
+                        </div>
+
+                        <button id="analyze-btn" class="w-full py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm transition-colors disabled:opacity-50" style="margin-top: 40px;" disabled>
+                            形態素解析して名詞を抽出
+                        </button>
+                    </section>
+
+                    <!-- Right Section: Result Word Editor Card -->
+                    <section class="card" id="extraction-section">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-2">
+                            <h2>単語の選択と意味の確認・編集</h2>
+                            <span id="count-info" class="text-xs text-slate-500 font-semibold">抽出数: 0語</span>
+                        </div>
+
+                        <div class="flex items-center gap-2 mb-3">
+                            <button id="select-all-btn" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg">☑ 全選択</button>
+                            <button id="deselect-all-btn" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg">☐ 全解除</button>
+                        </div>
+
+                        <div id="word-editor-list" class="editor-container flex-1">
+                            <div class="text-center py-16 text-slate-400 text-sm">
+                                左側のフォームにテキストを入力して解析を開始してください。
+                            </div>
+                        </div>
+
+                        <button id="save-btn" class="w-full mt-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-colors shadow-sm" style="margin-top: 20px;">
+                        選択した単語を単語帳に追加
+                        </button>
+                    </section>
+                </div>
+
+                <!-- TAB 2: WORDBOOK TABLE VIEW -->
+                <div id="tab-wordbook" class="tab-panel">
+                    <section class="card">
+                        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
+                            <h2>保存された単語一覧</h2>
+                            <div class="flex items-center gap-2">
+                                <button id="github-sync-btn" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl"> GitHubへ保存</button>
+                                <button id="clear-all-btn" class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold rounded-xl">🗑 全削除</button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-600 text-xs uppercase font-bold border-b border-slate-200">
+                                        <th class="py-3 px-4">単語</th>
+                                        <th class="py-3 px-4">読み方</th>
+                                        <th class="py-3 px-4">意味</th>
+                                        <th class="py-3 px-4">登録日</th>
+                                        <th class="py-3 px-4 text-right">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="saved-word-tbody" class="divide-y divide-slate-100 text-sm">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 3: QUIZ GAME VIEW -->
+                <div id="tab-quiz" class="tab-panel">
+                    <section class="card quiz-card-wrapper">
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 class="text-center border-none p-0 m-0">☑ フラッシュカード・クイズ</h2>
+                            <!-- Quiz File Selector -->
+                            <select id="quiz-file-select" class="p-1.5 border border-slate-200 rounded-lg text-xs bg-white outline-none">
+                                <option value="wordbook.md">wordbook.md (Default)</option>
+                            </select>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-6 text-left">単語帳に保存された単語で復習しましょう。カードをクリックすると意味が表示されます。</p>
+
+                        <div id="quiz-empty-state" style="display: none;" class="py-8">
+                            <p class="text-slate-500 text-sm mb-4">現在保存されている単語がありません。</p>
+                            <button class="px-5 py-2.5 bg-sky-600 text-white text-xs font-bold rounded-xl" onclick="switchTab('extractor', document.querySelector('.nav-btn'))">単語を追加しに行く</button>
+                        </div>
+
+                        <div id="quiz-play-area" class="flex flex-col gap-4">
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div id="quiz-progress-fill" class="bg-rose-500 h-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between text-xs text-slate-500 font-semibold">
+                                <span id="quiz-counter">問 1 / 1</span>
+                                <span id="quiz-score" class="text-sky-600">覚えた数: 0</span>
+                            </div>
+
+                            <!-- FLIPCARD -->
+                            <div class="flashcard" id="quiz-flashcard" onclick="toggleQuizMeaning()">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div id="quiz-word" class="text-3xl font-bold text-slate-900 mb-2">単語</div>
+                                    <div id="quiz-hint" class="text-xs text-slate-400">タップして意味を表示</div>
+                                    <div id="quiz-meaning" class="text-lg font-semibold text-rose-600 bg-rose-50 px-4 py-1.5 rounded-lg mt-3" style="display: none;">meaning</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <button class="py-3 bg-rose-100 text-rose-700 font-bold rounded-xl text-xs" onclick="nextQuizCard(false)">❌ まだ覚えていない</button>
+                                <button class="py-3 bg-emerald-100 text-emerald-700 font-bold rounded-xl text-xs" onclick="nextQuizCard(true)">⭕ 覚えた！</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- TAB 4: SETTINGS VIEW -->
+                <div id="tab-settings" class="tab-panel">
+                    <section class="card max-w-xl mx-auto gap-4">
+                        <h2>⚙ GitHub REST API & アカウント設定</h2>
+                        <p class="text-xs text-slate-500 mb-2">GitHubへの自動連携に使用するPersonal Access Tokenや保存先パスを設定します。</p>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label for="github-token" class="text-xs font-semibold text-slate-700">Personal Access Token (PAT):</label>
+                            <input type="password" id="github-token" placeholder="Enter your GitHub PAT (ghp_...)" class="p-2.5 border border-slate-200 rounded-xl text-sm outline-none bg-slate-50">
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label for="github-repo" class="text-xs font-semibold text-slate-700">GitHub Repository:</label>
+                            <input type="text" id="github-repo" value="scot-inf/N252313_Thazin_til" class="p-2.5 border border-slate-200 rounded-xl text-sm outline-none bg-slate-50">
+                        </div>
+
+                        <div class="flex flex-col gap-1.5">
+                            <label for="github-path" class="text-xs font-semibold text-slate-700">Target File Path:</label>
+                            <input type="text" id="github-path" value="wordbook.md" class="p-2.5 border border-slate-200 rounded-xl text-sm outline-none bg-slate-50">
+                        </div>
+
+                        <button id="github-config-save-btn" class="w-full mt-2 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm">
+                             設定を保存
+                        </button>
+                    </section>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Kuromoji.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.min.js"></script>
+    <!-- Custom JS File -->
+    <script src="test.js"></script>
+</body>
+</html>
