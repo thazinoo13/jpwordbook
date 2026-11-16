@@ -15,4 +15,5 @@
 | オピニオン | おぴにおん | opinion | 2026-11-16 |
 | 科学 | かがく | science | 2026-11-16 |
 | 文化 | ぶんか | culture, civilization, civilisation | 2026-11-16 |
-
+| 芸能 | げいのう | public entertainment, performing arts | 2026-11-16 |
+| ライフ | らいふ | life | 2026-11-16 |
