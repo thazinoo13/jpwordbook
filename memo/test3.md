@@ -8,3 +8,4 @@
 | 日本 | にっぽん | Japan | 2026-11-20 |
 | 地震 | じしん | earthquake | 2026-11-20 |
 | 海 | うみ | sea, ocean, waters | 2026-11-20 |
+| 秒 | びょう | second (unit of time) | 2026-11-20 |
