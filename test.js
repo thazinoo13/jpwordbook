@@ -37,16 +37,9 @@ const analyzeBtn = document.getElementById('analyze-btn');
 const languageInput = document.getElementById('languageInput');
 const errorMsg = document.getElementById('errorMsg');
 
-// ==========================================
-// File Path Managers (Memo & Quiz သီးခြားစီ ခွဲခြားခြင်း)
-// ==========================================
+// Global File Tracker
 const initialConfig = JSON.parse(localStorage.getItem("github_config") || "{}");
-
-// 1. Memo / Wordbook အတွက် Settings ထဲက Path ကို သုံးမည် (Default: wordbook.md)
-let memoActiveFile = initialConfig.path || "wordbook.md";
-
-// 2. Quiz အတွက် Dropdown မှ ရွေးချယ်သော Path ကို သီးခြားသုံးမည်
-let quizActiveFile = localStorage.getItem("current_quiz_file") || memoActiveFile;
+let currentActiveFile = localStorage.getItem("current_selected_file") || initialConfig.path || "wordbook.md";
 
 // Sidebar Navigation Tab Switcher
 window.switchTab = function(tabName, btnElement) {
@@ -72,85 +65,20 @@ window.switchTab = function(tabName, btnElement) {
     }
 };
 
-// Storage keys ခွဲခြားခြင်း
-function getMemoStorageKey() {
-    return `wordbook_data_${memoActiveFile}`;
-}
-
-function getquizStorageKey() {
-    return `wordbook_data_${quizActiveFile}`;
+function getStorageKey() {
+    return `wordbook_data_${currentActiveFile}`;
 }
 
 function updateSidebarPath() {
-    const pathLabel = document.getElementById("sidebar-path-label");
-    if (pathLabel) pathLabel.textContent = memoActiveFile;
-}
-
-// Markdown テーブルから単語データを抽出するヘルパー
-function parseMarkdownToWords(mdText) {
-    const lines = mdText.split("\n");
-    const words = [];
-    
-    lines.forEach(line => {
-        if (line.trim().startsWith("|") && !line.includes("---") && !line.includes("単語")) {
-            const cols = line.split("|").map(c => c.trim()).filter(c => c !== "");
-            if (cols.length >= 3) {
-                words.push({
-                    id: Date.now() + Math.random(),
-                    word: cols[0],
-                    reading: cols[1] !== '-' ? cols[1] : '',
-                    meaning: cols[2],
-                    addedAt: cols[3] || new Date().toISOString().split("T")[0]
-                });
-            }
-        }
-    });
-    return words;
-}
-
-// GitHub からデータを取得してマージする関数
-async function fetchAndMergeGitHubData(filename, storageKey) {
     const config = JSON.parse(localStorage.getItem("github_config") || "{}");
-    if (!config.token || !config.repo) return;
-
-    const url = `https://api.github.com/repos/${config.repo}/contents/${filename}`;
-    const headers = { 'Authorization': `Bearer ${config.token}` };
-
-    try {
-        const response = await fetch(url, { headers });
-        if (!response.ok) return;
-        const fileData = await response.json();
-        
-        const binaryString = atob(fileData.content);
-        const bytes = Uint8Array.from(binaryString, c => c.charCodeAt(0));
-        const decodedContent = new TextDecoder().decode(bytes);
-
-        const githubWords = parseMarkdownToWords(decodedContent);
-        if (githubWords.length === 0) return;
-
-        let localData = JSON.parse(localStorage.getItem(storageKey) || "[]");
-
-        let isUpdated = false;
-        githubWords.forEach(ghItem => {
-            const exists = localData.some(localItem => localItem.word === ghItem.word);
-            if (!exists) {
-                localData.push(ghItem);
-                isUpdated = true;
-            }
-        });
-
-        if (isUpdated) {
-            localStorage.setItem(storageKey, JSON.stringify(localData));
-        }
-    } catch (err) {
-        console.error("Failed to fetch repo files from GitHub:", err);
-    }
+    const pathLabel = document.getElementById("sidebar-path-label");
+    if (pathLabel) pathLabel.textContent = currentActiveFile || config.path || "wordbook.md";
 }
 
-// GitHub API မှ Repository ထဲရှိ .md ဖိုင်စာရင်းများကို လှမ်းထုတ်ခြင်း
+// GitHub API မှ Repository ထဲရှိ .md ဖိုင်စာရင်းများကို လှမ်းထုတ်ခြင်း (Array Check ထည့်သွင်းထားသည်)
 async function fetchGitHubFilesList() {
     const config = JSON.parse(localStorage.getItem("github_config") || "{}");
-    if (!config.repo) return [quizActiveFile];
+    if (!config.repo) return [currentActiveFile];
 
     const url = `https://api.github.com/repos/${config.repo}/contents/`;
     const headers = {};
@@ -160,20 +88,21 @@ async function fetchGitHubFilesList() {
 
     try {
         const response = await fetch(url, { headers });
-        if (!response.ok) return [quizActiveFile];
+        if (!response.ok) return [currentActiveFile];
         const data = await response.json();
         
-        if (!Array.isArray(data)) return [quizActiveFile];
+        // Data သည် Array ဟုတ်မဟုတ် သေချာစစ်ဆေးခြင်း (Crash မဖြစ်စေရန်)
+        if (!Array.isArray(data)) return [currentActiveFile];
         
         const mdFiles = data.filter(file => file.type === 'file' && file.name.endsWith('.md')).map(file => file.name);
-        return mdFiles.length > 0 ? mdFiles : [quizActiveFile];
+        return mdFiles.length > 0 ? mdFiles : [currentActiveFile];
     } catch (err) {
-        console.error("Failed to fetch file list:", err);
-        return [quizActiveFile];
+        console.error("Failed to fetch repo files from GitHub:", err);
+        return [currentActiveFile];
     }
 }
 
-// Initialize File Dropdown for Quiz
+// Initialize File Dropdown
 async function initFileSelectors() {
     const sel = document.getElementById('quiz-file-select');
     if (!sel) return;
@@ -190,27 +119,29 @@ async function initFileSelectors() {
         }
     }
     
-    if (files.length === 0) files = [quizActiveFile];
+    if (files.length === 0) files = [currentActiveFile];
 
     sel.innerHTML = "";
     files.forEach(filename => {
         const opt = document.createElement("option");
         opt.value = filename;
         opt.textContent = filename;
-        if (filename === quizActiveFile) opt.selected = true;
+        if (filename === currentActiveFile) opt.selected = true;
         sel.appendChild(opt);
     });
+    updateSidebarPath();
 }
 
-// Quiz File Select Change Event (Dropdown ပြောင်းလဲသည့်အခါ)
+// Quiz File Select Change Event
 document.getElementById('quiz-file-select')?.addEventListener('change', (e) => {
-    quizActiveFile = e.target.value;
-    localStorage.setItem("current_quiz_file", quizActiveFile);
+    currentActiveFile = e.target.value;
+    localStorage.setItem("current_selected_file", currentActiveFile);
+    updateSidebarPath();
     startQuiz();
 });
 
 // Initialize Kuromoji
-kuromoji.builder({ dicPath: "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/" }).build((err, _tokenizer) => {
+kuromoji.builder({ dicPath: "./dict/" }).build((err, _tokenizer) => {
     if (err) {
         console.error(err);
         document.getElementById("status-badge").textContent = "辞書読み込み失敗";
@@ -447,63 +378,48 @@ document.getElementById("deselect-all-btn").onclick = () => {
     renderEditorList(); 
 };
 
-// Save Button Click Event ,when we save word in memo
 document.getElementById("save-btn").addEventListener("click", () => {
     const selectedItems = extractedItems.filter(i => i.selected);
     if (selectedItems.length === 0) return showNotification("保存する単語を選択してください。");
 
-    //get setting of GitHub Path (memoActiveFile)
-    const targetPath = memoActiveFile || "wordbook.md";
+    const storageKey = getStorageKey(); 
+    const currentData = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    const today = new Date().toISOString().split("T")[0];
 
-    // show message with Cancel and OK (Confirm)
-    showConfirm(
-        "保存の確認",
-        `「${targetPath}」に選択した単語を保存しますか？`,
-        () => {
-            // it work when click OK
-            const storageKey = getMemoStorageKey(); 
-            const currentData = JSON.parse(localStorage.getItem(storageKey) || "[]");
-            const today = new Date().toISOString().split("T")[0];
+    let addedCount = 0;
 
-            let addedCount = 0;
+    selectedItems.forEach(item => {
+        const finalMeaning = (item.meaning && item.meaning !== "意味を検索中...") ? item.meaning : "-";
+        const existingIndex = currentData.findIndex(d => d.word === item.word);
 
-            selectedItems.forEach(item => {
-                const finalMeaning = (item.meaning && item.meaning !== "意味を検索中...") ? item.meaning : "-";
-                const existingIndex = currentData.findIndex(d => d.word === item.word);
-
-                if (existingIndex !== -1) {
-                    if (finalMeaning !== "-" && currentData[existingIndex].meaning === "-") {
-                        currentData[existingIndex].meaning = finalMeaning;
-                    }
-                    if (item.reading && !currentData[existingIndex].reading) {
-                        currentData[existingIndex].reading = item.reading;
-                    }
-                } else {
-                    currentData.push({
-                        id: Date.now() + Math.random().toString() + addedCount,
-                        word: item.word,
-                        reading: item.reading || "",
-                        meaning: finalMeaning,
-                        addedAt: today
-                    });
-                    addedCount++;
-                }
+        if (existingIndex !== -1) {
+            if (finalMeaning !== "-" && currentData[existingIndex].meaning === "-") {
+                currentData[existingIndex].meaning = finalMeaning;
+            }
+            if (item.reading && !currentData[existingIndex].reading) {
+                currentData[existingIndex].reading = item.reading;
+            }
+        } else {
+            currentData.push({
+                id: Date.now() + Math.random().toString() + addedCount,
+                word: item.word,
+                reading: item.reading || "",
+                meaning: finalMeaning,
+                addedAt: today
             });
-
-            localStorage.setItem(storageKey, JSON.stringify(currentData));
-            showNotification(`${selectedItems.length}語を単語帳に追加しました！`);
-            renderWordTable();
+            addedCount++;
         }
-    );
+    });
+
+    localStorage.setItem(storageKey, JSON.stringify(currentData));
+    showNotification(`${selectedItems.length}語を単語帳に追加しました！`);
+    renderWordTable();
 });
-// Memo / Wordbook Table (Settings ထဲက memoActiveFile ကို သုံးသည်)
-async function renderWordTable() {
+
+function renderWordTable() {
     const tbody = document.getElementById("saved-word-tbody");
     if (!tbody) return;
-    
-    const storageKey = getMemoStorageKey();
-    await fetchAndMergeGitHubData(memoActiveFile, storageKey);
-
+    const storageKey = getStorageKey();
     const data = JSON.parse(localStorage.getItem(storageKey) || "[]");
     
     if (data.length === 0) {
@@ -529,7 +445,7 @@ async function renderWordTable() {
 }
 
 window.deleteWord = function(id) {
-    const storageKey = getMemoStorageKey();
+    const storageKey = getStorageKey();
     let data = JSON.parse(localStorage.getItem(storageKey) || "[]");
     data = data.filter(item => String(item.id) !== String(id));
     localStorage.setItem(storageKey, JSON.stringify(data));
@@ -538,19 +454,20 @@ window.deleteWord = function(id) {
 
 document.getElementById("clear-all-btn").onclick = () => {
     showConfirm("全削除の確認", "本当にこのファイル用の単語データをすべて削除しますか？", () => {
-        const storageKey = getMemoStorageKey();
+        const storageKey = getStorageKey();
         localStorage.removeItem(storageKey);
         renderWordTable();
     });
 };
 
-// GitHub Sync Button (Memo active file သို့ ပို့မည်)
+// GitHub Sync Button (Fixed: currentActiveFile ကို ဦးစားပေးသုံးရန် ပြင်ဆင်ထားသည်)
 document.getElementById("github-sync-btn").addEventListener("click", async () => {
     const config = JSON.parse(localStorage.getItem("github_config") || "{}");
     if (!config.token) return showNotification("最初に「⚙ 設定」タブを開いて、Personal Access Tokenを設定してください。");
 
-    const targetPath = memoActiveFile;
-    const storageKey = getMemoStorageKey();
+    // လက်ရှိရွေးချယ်ထားသော currentActiveFile ကို ဦးစားပေးသုံးမည် (သို့မဟုတ် config.path)
+    const targetPath = currentActiveFile || config.path || "wordbook.md";
+    const storageKey = `wordbook_data_${targetPath}`;
     const data = JSON.parse(localStorage.getItem(storageKey) || "[]");
     
     if (data.length === 0) return showNotification(`GitHubに送信する「${targetPath}」の単語データがありません。`);
@@ -610,7 +527,9 @@ if (githubConfigSaveBtn) {
         };
         localStorage.setItem("github_config", JSON.stringify(config));
         
-        memoActiveFile = newPath;
+        currentActiveFile = newPath;
+        localStorage.setItem("current_selected_file", currentActiveFile);
+
         showNotification("GitHub設定を保存しました！");
         updateSidebarPath();
         renderWordTable();
@@ -623,7 +542,6 @@ function loadSettings() {
     if (config.repo) document.getElementById("github-repo").value = config.repo;
     if (config.path) {
         document.getElementById("github-path").value = config.path;
-        memoActiveFile = config.path;
     }
     updateSidebarPath();
 }
@@ -632,11 +550,8 @@ let quizList = [];
 let quizIndex = 0;
 let quizScore = 0;
 
-// Quiz Start Function (Quiz ဘက်အတွက် quizActiveFile ကို အသုံးပြုသည်)
-async function startQuiz() {
-    const storageKey = getquizStorageKey();
-    await fetchAndMergeGitHubData(quizActiveFile, storageKey);
-
+function startQuiz() {
+    const storageKey = getStorageKey();
     const data = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
     const emptyView = document.getElementById("quiz-empty-state");
