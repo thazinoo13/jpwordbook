@@ -5,4 +5,6 @@
 
 | 単語  | 読み方  | 意味  | 登録日  |
 | :--- | :--- | :--- | :--- |
-| 日本 | にっぽん | Japan | 2026-11-20 |
+| 家 | - | house | 2026-11-02 |
+| 美 | よし | Definition not found / API Temporarily Limited | 2026-11-20 |
+| 特 | とく | Definition not found / API Temporarily Limited | 2026-11-20 |
