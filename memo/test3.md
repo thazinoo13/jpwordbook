@@ -8,3 +8,4 @@
 | 家 | - | house | 2026-11-02 |
 | 美 | よし | Definition not found / API Temporarily Limited | 2026-11-20 |
 | 特 | とく | Definition not found / API Temporarily Limited | 2026-11-20 |
+| 时 | 时 | Definition not found / API Temporarily Limited | 2026-11-20 |
